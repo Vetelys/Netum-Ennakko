@@ -1,0 +1,63 @@
+.App {
+  position: absolute;
+  right: 50%;
+  top: 100px;
+  transform: translate(50%);
+  text-align: center;
+  background-color: rgb(31, 162, 214);
+}
+
+.table-headers th{
+  -moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+  padding: 10px;
+}
+
+.table-body{
+  width: auto;
+  background-color: rgb(39, 116, 179);
+}
+
+th, h2 {
+  color: white;
+  text-shadow: 2px 2px black;
+}
+
+
+td {
+  width:150px;
+  font-size: 20px;
+  color:white;
+  text-shadow: 1.5px 1.5px black;
+}
+
+button {
+  margin: 5px;
+  border-radius: 10px;
+  background-color: rgb(47, 102, 153);
+  border: none;
+  color:whitesmoke;
+  font-size: 18px;
+  padding: 5px;
+}
+
+button:hover {
+  opacity: 0.5;
+}
+
+input {
+  font-size: 18px;
+  margin: 8px;
+  width: 100px;
+  border: none;
+}
+
+.button-column{
+  background-color: rgb(31, 162, 214);
+}
+
+.add-user-form input {
+  width: fit-content;
+}
+
+
+
