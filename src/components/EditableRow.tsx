@@ -8,40 +8,72 @@ interface Data {
     [key: string]: string | number;
   }
 
-function EditableRow(data : Data){
+interface CallBacks {
+    delete: (event: React.MouseEvent<HTMLButtonElement>) => void;
+    save: (event: React.MouseEvent<HTMLButtonElement>, userData: Data) => void;
+}
+
+interface Props {
+    data: Data;
+    callbacks: CallBacks;
+}
+
+
+
+function EditableRow(props : Props){
+
+    const [formData, setFormData] = useState<Data>({
+        first_name: props.data.first_name,
+        last_name: props.data.last_name,
+        age: props.data.age
+      })
+
+
     const [editable, setEditable] = useState<boolean>(false)
 
-    const setEditState = () =>{
-        setEditable(true);
+    const setEditState = (status: boolean) =>{
+        setEditable(status);
     }
+
+    const saveNewData = (event: React.MouseEvent<HTMLButtonElement>) =>{
+        props.callbacks.save(event, formData);
+        setEditable(false);
+
+    }
+
+    const addFormData = (event: React.FormEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        const field = String(event.currentTarget.getAttribute("name"));
+        const value = event.currentTarget.value;
+        const updatedData = {...formData};
+        updatedData[field] = value;
+        setFormData(updatedData);
+        console.log(updatedData);
+      }
 
     if(editable){
         return(
-        <div>
-            <tr>
-                <td><input>{data.first_name}</input></td>
-                <td><input>{data.last_name}</input></td>
-                <td><input>{data.age}</input></td>
-                <td>
-                    <button>Save</button>
-                    <button>Cancel</button>
-                </td>
-            </tr>
-        </div>)
+        <tr>
+            <td><input type="text" name="first_name" onChange={addFormData} placeholder={props.data.first_name}></input></td>
+            <td><input type="text" name="last_name" onChange={addFormData} placeholder={props.data.last_name}></input></td>
+            <td><input type="number" name="age" onChange={addFormData} placeholder={String(props.data.age)}></input></td>
+            <td className='button-column'>
+                <button onClick={saveNewData}>Save</button>
+                <button onClick={() => setEditState(false)}>Cancel</button>
+            </td>
+        </tr>)
     }
     else{
         return(
-            <div>
-                <tr>
-                    <td>{data.first_name}</td>
-                    <td>{data.last_name}</td>
-                    <td>{data.age}</td>
-                    <td>
-                    <button onClick={setEditState}>Edit</button>
-                    <button>Delete</button>
-                    </td>
-                </tr>
-            </div>
+        <tr>
+            <td>{props.data.first_name}</td>
+            <td>{props.data.last_name}</td>
+            <td>{props.data.age}</td>
+            <td className='button-column'>
+                <button onClick={() => setEditState(true)}>Edit</button>
+                <button onClick={props.callbacks.delete}>Delete</button>
+            </td>
+        </tr>
         )
     }
 }

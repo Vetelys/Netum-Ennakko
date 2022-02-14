@@ -12,23 +12,26 @@
 }
 
 .table-body{
+  width: auto;
   background-color: aqua;
-}
-
-.table-element{
-  width: 100%;
 }
 
 th, h2 {
   color: aquamarine;
 }
 
+
 td {
-  width: fit-content;
+  width:33%;
+  font-size: 20px;
 }
 
 button {
   margin: 5px;
+}
+
+.button-column{
+  background-color: blue;
 }
 
 
