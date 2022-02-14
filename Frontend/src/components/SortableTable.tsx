@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import '../App.css';
 import EditableRow from './EditableRow'
 import Header from './Header'
@@ -10,6 +10,11 @@ interface Data {
   last_name: string;
   age: number;
   [key: string]: string | number;
+}
+
+interface SortParam {
+  order: "Asc" | "Desc";
+  column: string;
 }
 
 
@@ -24,40 +29,55 @@ const initial_data: Data[] = [
 
 function SortableTable() {
 
-  const [order, setOrder] = useState("Desc");
-  const [sortCol, setSortCol] = useState("first_name")
-  const [data, setData] = useState(sortItems(initial_data));
+  const [sortParam, setSortParams] = useState<SortParam>({order: "Asc", column: "first_name"});
+  const [data, setData] = useState<Data[]>(initial_data);
 
+  useEffect(()=>{
+    sortItems(); // MUUTTUU ILMAN setData??
+  }, [sortParam])
 
-  function sortItems(inputData: Data[]){
-    const sortedData = inputData.sort((a, b) =>{
-      if(order === "Asc"){
-          return String(a[sortCol]).toLowerCase() < String(b[sortCol]).toLowerCase() ? 1 : -1
+  const sortItems = () => {
+
+    const sortCol = sortParam.column;
+    const order = sortParam.order;
+    const sortedData = [...data];
+    
+    sortedData.sort((a, b) =>{
+      // sort age by numerical value
+      if(sortCol === 'age'){
+          if(order === "Asc"){
+            return a[sortCol] - b[sortCol] <= 0 ? 1 : -1
+          }
+          else{
+            return a[sortCol] - b[sortCol] > 0 ? 1 : -1
+          }
       }
+      //sort everything else by lower cased string value
       else{
-        return String(a[sortCol]).toLowerCase() > String(b[sortCol]).toLowerCase() ? 1 : -1
+          if(order === "Asc"){
+            return String(a[sortCol]).toLowerCase() < String(b[sortCol]).toLowerCase() ? 1 : -1
+          }
+          else{
+            return String(a[sortCol]).toLowerCase() > String(b[sortCol]).toLowerCase() ? 1 : -1
+          }
       }
     });
-    return sortedData
+    setData(sortedData);
   }
 
-    // SORT BY COLUMNS
-    const sortByColumn = (event: React.MouseEvent<HTMLHeadingElement>) =>{
-      event.preventDefault();
-      order === "Asc" ? setOrder("Desc") : setOrder("Asc");
-      const headerKey = String(event.currentTarget.getAttribute("sort-key"));
-      setSortCol(headerKey);
-      const sortedData = sortItems(data);
-      setData(sortedData);
-    }
+  // SORT BY COLUMNS
+  const sortByColumn = (event: React.MouseEvent<HTMLHeadingElement>) =>{
+    event.preventDefault();
+    const sortKey = String(event.currentTarget.getAttribute("sort-key"));
+    sortParam.order === "Asc" ? setSortParams({order: "Desc", column: sortKey}) : setSortParams({order: "Asc", column: sortKey});
+  }
 
   //  CREATE
   const submitForm = (event: React.FormEvent<HTMLButtonElement>, userData: Data) =>{
     event.preventDefault();
     const newData = [...data];
     newData.push(userData);
-    const sortedData = sortItems(newData);
-    setData(sortedData);
+    setData(newData);
   }
 
 
@@ -79,8 +99,7 @@ function SortableTable() {
     if(typeof(index)==='number'){
       const newData = [...data];
       newData[index-1] = userData;
-      const sortedData = sortItems(newData);
-      setData(sortedData);
+      setData(newData);
     }
   }
 
@@ -97,9 +116,7 @@ function SortableTable() {
       <table className='table-element'>
         <Header sort={sortByColumn}></Header>
         <tbody className='table-body'>
-          {data.map((row) => {
-            return <EditableRow data={{...row}} callbacks={{...callbacks}}></EditableRow>})
-          }
+          {data.map((row) => {return <EditableRow data={{...row}} callbacks={{...callbacks}}></EditableRow>})}
         </tbody>
       </table>
     </div>
