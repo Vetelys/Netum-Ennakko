@@ -1,2 +1,2 @@
 # Netum-Ennakko
-React-taulukko PostgreSQL tietokannalla
+React-taulukko
