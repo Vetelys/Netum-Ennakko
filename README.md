@@ -1,4 +1,6 @@
 # Netum-Ennakko
+Käyttö: npm install, npm start
+
 React-taulukko, toteutettu neljällä react komponentilla: Header, AddUserForm, SortableTable jonka sisällä on useita EditableRow komponentteja.
 ![kuva](https://user-images.githubusercontent.com/48647132/154449663-1e95daf5-4759-461a-82b0-cd22172fb208.png)
 
