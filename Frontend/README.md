@@ -1,2 +1,0 @@
-# Netum-Ennakko
-React-taulukko
